@@ -296,6 +296,9 @@ function start(c: DbConnection) {
 }
 
 function onConnect(c: DbConnection, identity: Identity, token: string) {
+  const gen = generation;
+  // Anything a dropped connection still delivers later is stale: ignore it.
+  const alive = () => gen === generation;
   myIdentity = identity;
   log(`connected as ${identity.toHexString().slice(0, 16)}…`);
   retries = 0;
@@ -341,17 +344,19 @@ function onConnect(c: DbConnection, identity: Identity, token: string) {
     ]);
 
   c.db.auction.onInsert((_ctx, a) => {
+    if (!alive()) return;
+    lastAuctionAt = Date.now();
     if (myBotId === null || a.status.tag !== "Open") return;
     bidOn(c, a.id, a.matchId, a.letter);
     playWords(c, a.matchId);
   });
-  c.db.myRack.onInsert((_ctx, h) => playWords(c, h.matchId));
-  c.db.myRack.onUpdate((_ctx, _old, h) => playWords(c, h.matchId));
+  c.db.myRack.onInsert((_ctx, h) => alive() && playWords(c, h.matchId));
+  c.db.myRack.onUpdate((_ctx, _old, h) => alive() && playWords(c, h.matchId));
   c.db.botCredential.onInsert(() => {
     if (myBotId === null && myIdentity) myBotId = c.db.botCredential.identity.find(myIdentity)?.botId ?? null;
   });
   c.db.matchState.onUpdate((_ctx, old, neu) => {
-    if (myBotId === null || !me(c, neu.id)) return;
+    if (!alive() || myBotId === null || !me(c, neu.id)) return;
     if (old.status.tag !== "Running" && neu.status.tag === "Running") {
       log(`m${neu.id} started (${neu.auctionType.tag}, ${neu.auctionDurationMs}ms auctions)`);
     }
@@ -363,21 +368,23 @@ function onConnect(c: DbConnection, identity: Identity, token: string) {
     }
   });
   c.db.matchParticipant.onInsert((_ctx, p) => {
-    if (!live || p.botId !== myBotId) return;
+    if (!alive() || !live || p.botId !== myBotId) return;
     // The game subscription replays every match this bot ever played;
     // only a running one is news.
     if (c.db.matchState.id.find(p.matchId)?.status.tag !== "Running") return;
     log(`seated in match ${p.matchId}`);
+    lastAuctionAt = Date.now();
     watchStandings(c, p.matchId);
     for (const a of c.db.auction.iter()) {
       if (a.matchId === p.matchId && a.status.tag === "Open") bidOn(c, a.id, a.matchId, a.letter);
     }
   });
   c.db.wordPlay.onInsert((_ctx, w) => {
-    if (live && w.botId === myBotId && c.db.matchState.id.find(w.matchId)?.status.tag === "Running") log(`m${w.matchId} scored ${w.word} +${w.totalReward}`);
+    if (alive() && live && w.botId === myBotId && c.db.matchState.id.find(w.matchId)?.status.tag === "Running") log(`m${w.matchId} scored ${w.word} +${w.totalReward}`);
   });
-  c.db.tournament.onInsert(() => checkTournaments(c));
+  c.db.tournament.onInsert(() => alive() && checkTournaments(c));
   c.db.tournament.onUpdate((_ctx, _old, t) => {
+    if (!alive()) return;
     log(`tournament ${t.id}: ${t.status.tag}`);
     checkTournaments(c);
   });
@@ -385,8 +392,11 @@ function onConnect(c: DbConnection, identity: Identity, token: string) {
 
 let retries = 0;
 let heartbeat: NodeJS.Timeout | undefined;
+let generation = 0;
+let lastAuctionAt = 0;
 
 function connect() {
+  const gen = ++generation;
   bidAuctions.clear();
   inflight.clear();
   registered.clear();
@@ -398,12 +408,17 @@ function connect() {
     .withUri(HOST)
     .withDatabaseName(DB_NAME)
     .withToken(BOT_TOKEN ?? loadToken())
-    .onConnect(onConnect)
+    .onConnect((c, identity, token) => {
+      if (gen !== generation) return;
+      onConnect(c, identity, token);
+    })
     .onConnectError((_ctx: ErrorContext, err: Error) => {
+      if (gen !== generation) return;
       log(`connect error: ${err.message}`);
       reconnect();
     })
     .onDisconnect(() => {
+      if (gen !== generation) return;
       log("disconnected");
       reconnect();
     })
@@ -411,11 +426,11 @@ function connect() {
 }
 
 let reconnecting = false;
-function reconnect() {
+function reconnect(immediate = false) {
   if (reconnecting) return;
   reconnecting = true;
   conn = null;
-  const wait = Math.min(15_000, 1000 * 2 ** retries++);
+  const wait = immediate ? 200 : Math.min(15_000, 1000 * 2 ** retries++);
   log(`reconnecting in ${wait / 1000}s`);
   setTimeout(() => {
     reconnecting = false;
@@ -431,6 +446,33 @@ heartbeat = setInterval(() => {
   checkTournaments(conn);
   actAll(conn);
 }, 5000);
+
+// Watchdog: on this network a connection can freeze for over a minute and
+// then deliver every auction at once, all of them already closed (match
+// 46975: 76 s frozen, scored 0). Auctions arrive about once a second in a
+// running match, so a few seconds of silence means the socket is stuck:
+// drop it and reconnect at once instead of waiting it out.
+const STALL_MS = Number(process.env.STALL_MS || 4000);
+setInterval(() => {
+  if (!conn || myBotId === null || !live || lastAuctionAt === 0) return;
+  const running = runningMatches(conn);
+  if (running.length === 0) return;
+  const m = conn.db.matchState.id.find(running[0]!);
+  const limit = Math.max(STALL_MS, 3 * Number(m?.auctionDurationMs ?? 1000n));
+  const quiet = Date.now() - lastAuctionAt;
+  if (quiet < limit) return;
+  log(`no auction for ${(quiet / 1000).toFixed(1)}s in match ${running[0]}: connection looks stuck, reconnecting now`);
+  const old = conn;
+  generation++; // ignore whatever the stuck connection delivers later
+  lastAuctionAt = 0;
+  try {
+    (old as unknown as { disconnect?: () => void }).disconnect?.();
+  } catch {
+    // already closed
+  }
+  reconnecting = false;
+  reconnect(true);
+}, 1000);
 
 process.on("SIGINT", () => {
   log("stopping");
