@@ -51,13 +51,15 @@ Results, 6 bots per match (an even share of wins is 16.7%):
 
 | Opponents | Win rate | Avg score |
 |---|---|---|
-| Replayed live market, 2,000 matches | 17-20% (before tuning: 13-15%) | 87 vs 74 field mean |
+| Replayed live market, 4,000 matches | 21% (before tuning: 14%) | 88 vs 74 field mean |
 | 5 field-model bots, 300 matches | 59% | 81 vs 55 |
 | 2 starter bots + 3 server sims, 300 matches | 100% | ~350 |
 
-The one change that mattered most: playing a 7-letter word as soon as the rack spells one, instead
-of holding everything for the end. It already earns the top multiplier, and the money it brings in
-buys more tiles while they still matter.
+The one change that mattered most: playing a 7-letter word mid-match when it's worth more than
+its tiles are to keep, instead of holding everything for the end. It already earns the top
+multiplier, and the money it brings in buys more tiles while they still matter. A final parameter
+set from random search added about two more points of win rate, confirmed on four independent
+seed sets.
 
 ## Running it
 

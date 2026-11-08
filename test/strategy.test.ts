@@ -38,10 +38,10 @@ test("mid-match it holds words shorter than 7 letters", () => {
   assert.deepEqual(brain.wordsToPlay(view("AEIRST", 40)), []);
 });
 
-test("mid-match it plays a 7-letter word at once", () => {
-  const words = brain.wordsToPlay(view("AEINRST", 40));
-  assert.equal(words.length, 1);
-  assert.equal(words[0]!.length, 7);
+test("mid-match it plays a 7-letter word worth more than its tiles are to keep", () => {
+  // QUARTZY is 84 points; RETAINS (21) is held in the hope of an 8-letter upgrade.
+  assert.deepEqual(brain.wordsToPlay(view("AQRTUYZ", 40)), ["QUARTZY"]);
+  assert.deepEqual(brain.wordsToPlay(view("AEINRST", 40)), []);
 });
 
 test("near the end it plays everything it can, with disjoint tiles", () => {
