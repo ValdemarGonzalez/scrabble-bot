@@ -1,0 +1,25 @@
+{
+  "name": "scrabble-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A ScrabbleBot tournament bot (HackUTD 2026): hoards letters for 7-letter words and values each letter by what it adds to the rack.",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "sim": "tsx sim/run.ts",
+    "peek": "tsx src/peek.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "generate": "spacetime generate --lang typescript --out-dir src/module_bindings --module-path ../scrabblebot/spacetimedb"
+  },
+  "dependencies": {
+    "spacetimedb": "^2.12.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}
