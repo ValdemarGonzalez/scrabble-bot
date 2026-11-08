@@ -72,6 +72,14 @@ npm start
 After the first connect, the token is saved to `.token-<BOT_NAME>`, which git ignores. Logs go to
 the console and `logs/<BOT_NAME>.log`.
 
+For a tournament, run it under the supervisor, which restarts the bot if it ever exits:
+
+```bash
+npm run forever
+```
+
+On Windows, double-clicking `start-bot.cmd` does the same in its own window.
+
 Other scripts:
 
 ```bash
