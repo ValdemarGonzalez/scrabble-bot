@@ -12,8 +12,10 @@
 // The token is saved after the first connect, so later runs need only
 // BOT_NAME. The client reconnects by itself if the connection drops.
 
+import "./dns-guard.js"; // first: every connection below resolves through it
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { setFallbackLogger } from "./dns-guard.js";
 import { Identity } from "spacetimedb";
 import { DbConnection, type ErrorContext } from "./module_bindings/index.js";
 import { ALPHABET, emptyRack, loadLexicon, type Rack } from "./lexicon.js";
@@ -48,6 +50,12 @@ function log(msg: string) {
   console.log(line);
   logFile.write(line + "\n");
 }
+
+setFallbackLogger(log);
+
+// Touch this file to keep the bot out of new lobby matches without a
+// restart (e.g. right before a tournament starts); delete it to resume.
+const NO_LOBBY_FLAG = path.join(process.cwd(), ".no-lobby");
 
 function loadToken(): string | undefined {
   try {
@@ -203,9 +211,16 @@ function awaitingTournament(c: DbConnection): boolean {
   return waiting;
 }
 
+let saidFlag = false;
 function joinLobby(c: DbConnection) {
   if (!USE_LOBBY || myBotId === null) return;
   if (runningMatches(c).length > 0) return;
+  const flagged = fs.existsSync(NO_LOBBY_FLAG);
+  if (flagged !== saidFlag) {
+    saidFlag = flagged;
+    log(flagged ? ".no-lobby present: not joining lobby matches" : ".no-lobby removed: lobby matches again");
+  }
+  if (flagged) return;
   if (awaitingTournament(c)) return;
   if (Array.from(c.db.openLobbyMembers.iter()).some((lm) => lm.botId === myBotId)) return;
   c.reducers.joinLobby({}).catch(failed("joining the lobby"));

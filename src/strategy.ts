@@ -52,7 +52,7 @@ export const DEFAULT_PARAMS: Params = {
   paceRef: 1.5,
   paceMin: 0.5,
   paceMax: 3,
-  flushAt: 2,
+  flushAt: 4,
   playLen: 7,
   lowCash: 9.4,
   endgame: 13,
