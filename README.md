@@ -21,12 +21,14 @@ rack, and calls the game's reducers (`submit_bid`, `submit_word`, `join_lobby`,
   the right play. Bids scale with money left per remaining auction, since money left at the end of
   a match is worth nothing. Near the end, spare money goes to denial bids. On the last tile the bot
   passes: the match ends when that auction closes, so nobody can use the tile.
-- **Holds every word until the end.** With two tiles left in the bag, it splits the whole rack
-  into the highest-scoring set of words (depth-first search with a time budget) and plays them all
-  at once. If money runs low mid-match, it cashes in a 5+ letter word to keep bidding.
+- **Plays 7-letter words at once, holds everything else for the end.** A 7-letter word already
+  earns the top 3x multiplier, and the money it brings in buys more tiles. Shorter words wait:
+  with two tiles left in the bag, the bot splits the whole rack into the highest-scoring set of
+  words (depth-first search with a time budget) and plays them all. If money runs low mid-match,
+  it cashes in a 5+ letter word to keep bidding.
 - **Runs unattended.** Reconnects with backoff, rejoins the lobby after each match, registers
-  itself for any tournament open for registration, and never spends the same tile twice while
-  words are in flight.
+  itself for any tournament open for registration (and then stays out of lobby matches so the
+  tournament can start), and never spends the same tile twice while words are in flight.
 
 ## Tuning
 
@@ -39,13 +41,23 @@ first-price, match ends on an empty bag). It plays thousands of matches in paral
   about 20 for 4-pointers, 35-50 for J/Q/X/Z),
 - other versions of this bot.
 
-Results (300 matches each, 6 bots per match):
+There is also a replay of the real market (`npm run market`): 389 recent live matches were pulled
+from the server, and for every tile the bot faces the highest opponent bid actually placed on that
+letter at that point in a match. Its score is then ranked against the real scores from a live
+match. Every candidate plays identical seeds, so differences aren't luck of the draw. This is what
+the final parameters were tuned on, with random search over about 150 parameter sets on 15 cores.
 
-| Field | Win rate | Avg score |
+Results, 6 bots per match (an even share of wins is 16.7%):
+
+| Opponents | Win rate | Avg score |
 |---|---|---|
-| vs 5 field-model bots | 64% (even share: 17%) | 84 vs ~57 |
-| vs 2 starter bots + 3 server sims | 100% | ~350 |
-| head-to-head, 3 tuned vs 3 untuned copies | 23% vs 10% | 84 vs 73 |
+| Replayed live market, 2,000 matches | 17-20% (before tuning: 13-15%) | 87 vs 74 field mean |
+| 5 field-model bots, 300 matches | 59% | 81 vs 55 |
+| 2 starter bots + 3 server sims, 300 matches | 100% | ~350 |
+
+The one change that mattered most: playing a 7-letter word as soon as the rack spells one, instead
+of holding everything for the end. It already earns the top multiplier, and the money it brings in
+buys more tiles while they still matter.
 
 ## Running it
 
@@ -65,6 +77,7 @@ Other scripts:
 ```bash
 npm test                 # strategy and solver tests
 npm run sim -- field 300 # simulate 300 matches (scenarios: field, mixed, sims, starters, whales, ab, abfield, ...)
+npm run market -- 1000   # replay 1000 matches against real live prices; add "search 50" to try random parameter sets
 npm run peek             # read-only look at the live lobby, tournaments and top bots
 npm run peek -- 196      # ...plus one bot's recent matches
 ```
@@ -82,7 +95,8 @@ To try parameter changes in the simulator, pass JSON overrides:
 | `src/lexicon.ts` | Wordlist packed for fast rack scans; scoring rules |
 | `src/peek.ts` | Read-only view of the live game |
 | `src/module_bindings/` | Generated Spacetime client bindings for the game module |
-| `sim/` | Offline match simulator and opponent models |
+| `sim/` | Offline match simulator, opponent models, and the live-market replay |
+| `data/live/` | Bids, prices and scores from 389 live matches (the market the bot is tuned on) |
 | `data/wordlist.txt` | ENABLE wordlist, the game's dictionary (public domain) |
 
 ## Notes

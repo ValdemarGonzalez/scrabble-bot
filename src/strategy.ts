@@ -9,7 +9,7 @@
 // as soon as the rack spells one. Everything else is held for longer words
 // and played in one flush just before the match ends.
 
-import { scan, rackSize, rackToString, type Lexicon, type Rack, type ScanResult } from "./lexicon.js";
+import { FACE, scan, rackSize, rackToString, type Lexicon, type Rack, type ScanResult } from "./lexicon.js";
 import { solve, type Plan } from "./solver.js";
 
 export interface Params {
@@ -28,6 +28,7 @@ export interface Params {
   endgame: number; // bag size at which leftover money starts going to denial bids
   denial: number; // fraction of balance per remaining auction spent on denial
   firstPriceShade: number; // bid this fraction of value in first-price auctions
+  heavy: number; // bid multiplier for tiles with face value 5+ (J K Q X Z)
   timeMs: number; // solver budget per solve
 }
 
@@ -42,11 +43,12 @@ export const DEFAULT_PARAMS: Params = {
   paceMin: 0.5,
   paceMax: 3,
   flushAt: 2,
-  playLen: 99,
+  playLen: 7,
   lowCash: 15,
   endgame: 6,
   denial: 1.0,
   firstPriceShade: 0.8,
+  heavy: 1,
   timeMs: 35,
 };
 
@@ -111,6 +113,7 @@ export class Brain {
     const value = this.tileValue(v.rack, letter, v.bag);
     const pace = Math.min(p.paceMax, Math.max(p.paceMin, v.balance / (v.bag + 1) / p.paceRef));
     let amount = value * p.kappa * pace;
+    if (FACE[letter]! >= 5) amount *= p.heavy;
     if (v.firstPrice) amount *= p.firstPriceShade;
     if (v.bag <= p.endgame) {
       // Money left at the end is worth nothing; spend it keeping tiles

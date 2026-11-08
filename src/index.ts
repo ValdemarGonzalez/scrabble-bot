@@ -33,6 +33,9 @@ const BOT_NONCE = process.env.BOT_NONCE || undefined;
 const TOURNAMENT_ID = process.env.TOURNAMENT_ID || undefined;
 const AUTO_TOURNAMENT = !process.env.NO_TOURNAMENT;
 const USE_LOBBY = !process.env.NO_LOBBY;
+// Once registered for a tournament, stay out of lobby matches so the admin
+// can start it without waiting on us. LOBBY_WHILE_WAITING=1 keeps playing.
+const LOBBY_WHILE_WAITING = !!process.env.LOBBY_WHILE_WAITING;
 const TOKEN_PATH = path.join(process.cwd(), `.token-${BOT_NAME}`);
 const LOG_DIR = path.join(process.cwd(), "logs");
 
@@ -187,9 +190,23 @@ function actAll(c: DbConnection) {
 
 // ---------- Lobby and tournaments ----------
 
+let saidWaiting = false;
+function awaitingTournament(c: DbConnection): boolean {
+  if (LOBBY_WHILE_WAITING) return false;
+  const waiting = Array.from(c.db.tournament.iter()).some(
+    (t) =>
+      t.status.tag === "Registration" &&
+      Array.from(c.db.tournamentEntry.iter()).some((e) => e.tournamentId === t.id && e.botId === myBotId),
+  );
+  if (waiting && !saidWaiting) log("registered for a tournament; staying out of the lobby until it starts");
+  saidWaiting = waiting;
+  return waiting;
+}
+
 function joinLobby(c: DbConnection) {
   if (!USE_LOBBY || myBotId === null) return;
   if (runningMatches(c).length > 0) return;
+  if (awaitingTournament(c)) return;
   if (Array.from(c.db.openLobbyMembers.iter()).some((lm) => lm.botId === myBotId)) return;
   c.reducers.joinLobby({}).catch(failed("joining the lobby"));
 }
