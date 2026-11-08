@@ -63,6 +63,8 @@ export interface MarketResult {
   tiles: number;
   endMoney: number;
   leftover: number;
+  // purchases by class: [vowel, 1-point consonant, 2-4 point, 5+] as [count, paid]
+  byClass: [number, number][];
 }
 
 const wordSets = new WeakMap<Lexicon, Set<string>>();
@@ -90,6 +92,8 @@ export function playMarketMatch(lex: Lexicon, brain: Brain, mk: Market, seed: nu
   let balance = 100;
   let score = 0;
   let tiles = 0;
+  const byClass: [number, number][] = [[0, 0], [0, 0], [0, 0], [0, 0]];
+  const classOf = (c: number) => ("AEIOU".includes(String.fromCharCode(65 + c)) ? 0 : FACE[c]! === 1 ? 1 : FACE[c]! <= 4 ? 2 : 3);
   const play = (list: string[]) => {
     for (const w of list) {
       if (!words!.has(w)) continue;
@@ -121,6 +125,8 @@ export function playMarketMatch(lex: Lexicon, brain: Brain, mk: Market, seed: nu
         balance -= paid;
         rack[letter]!++;
         tiles++;
+        byClass[classOf(letter)]![0]++;
+        byClass[classOf(letter)]![1] += paid;
       }
     }
   }
@@ -129,5 +135,5 @@ export function playMarketMatch(lex: Lexicon, brain: Brain, mk: Market, seed: nu
   const place = 1 + real.filter((s) => s > score).length;
   let leftover = 0;
   for (let c = 0; c < 26; c++) leftover += rack[c]!;
-  return { score, place, win: place === 1 ? 1 : 0, tiles, endMoney: balance, leftover };
+  return { score, place, win: place === 1 ? 1 : 0, tiles, endMoney: balance, leftover, byClass };
 }

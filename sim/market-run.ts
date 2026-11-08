@@ -26,6 +26,11 @@ const ranges: Record<string, [number, number]> = {
   lowCash: [5, 30],
   endgame: [2, 14],
   denial: [0, 2],
+  floorBid: [0, 14],
+  vowel: [0.8, 1.3],
+  q1Pace: [0.6, 1.2],
+  q2Pace: [0.7, 1.2],
+  playReward: [20, 80],
 };
 const base: Record<string, number> = JSON.parse(process.env.SEARCH_BASE ?? "{}");
 const candidates: Record<string, number>[] = [{}, ...extra];
@@ -41,8 +46,8 @@ for (let i = 0; i < searchN; i++) {
 const tasks: [number, number][] = [];
 for (let s = 0; s < matches; s++) for (let ci = 0; ci < candidates.length; ci++) tasks.push([ci, seedBase + s]);
 const threads = Math.min(Number(process.env.SIM_THREADS ?? os.cpus().length), tasks.length);
-type Acc = { n: number; score: number; win: number; place: number; tiles: number; money: number; left: number };
-const acc: Acc[] = candidates.map(() => ({ n: 0, score: 0, win: 0, place: 0, tiles: 0, money: 0, left: 0 }));
+type Acc = { n: number; score: number; win: number; place: number; tiles: number; money: number; left: number; cls: number[] };
+const acc: Acc[] = candidates.map(() => ({ n: 0, score: 0, win: 0, place: 0, tiles: 0, money: 0, left: 0, cls: [0, 0, 0, 0, 0, 0, 0, 0] }));
 const t0 = Date.now();
 await Promise.all(
   Array.from(
@@ -53,7 +58,7 @@ await Promise.all(
           workerData: { tasks: tasks.filter((_, i) => i % threads === k), candidates },
           execArgv: ["--import", "tsx"],
         });
-        w.on("message", (m: { ci: number; score: number; win: number; place: number; tiles: number; endMoney: number; leftover: number }) => {
+        w.on("message", (m: { ci: number; score: number; win: number; place: number; tiles: number; endMoney: number; leftover: number; byClass: [number, number][] }) => {
           const a = acc[m.ci]!;
           a.n++;
           a.score += m.score;
@@ -62,6 +67,10 @@ await Promise.all(
           a.tiles += m.tiles;
           a.money += m.endMoney;
           a.left += m.leftover;
+          m.byClass.forEach(([n, paid], i) => {
+            a.cls[2 * i]! += n;
+            a.cls[2 * i + 1]! += paid;
+          });
         });
         w.on("error", reject);
         w.on("exit", () => resolve());
@@ -76,6 +85,8 @@ for (const { c, a } of rows.slice(0, Number(process.env.SHOW ?? 12))) {
   console.log(
     `${((100 * a.win) / a.n).toFixed(1).padStart(5)}  ${(a.place / a.n).toFixed(2)}  ${(a.score / a.n).toFixed(1).padStart(6)}  ${(a.tiles / a.n).toFixed(1).padStart(5)}  ${(a.money / a.n).toFixed(0).padStart(8)}  ${(a.left / a.n).toFixed(1).padStart(4)}  ${Object.keys(c).length ? JSON.stringify(c) : "(defaults)"}`,
   );
+  if (process.env.PROFILE)
+    console.log(`        bought: ${["vowel", "cons1", "cons2-4", "heavy"].map((k, i) => `${k} ${(a.cls[2 * i]! / a.n).toFixed(1)}@${(a.cls[2 * i + 1]! / Math.max(1, a.cls[2 * i]!)).toFixed(1)}`).join("  ")}`);
 }
 const d = rows.find((r) => Object.keys(r.c).length === 0)!;
 console.log(`defaults: win ${((100 * d.a.win) / d.a.n).toFixed(1)}%, place ${(d.a.place / d.a.n).toFixed(2)}, score ${(d.a.score / d.a.n).toFixed(1)}`);

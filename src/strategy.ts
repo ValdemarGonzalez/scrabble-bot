@@ -35,6 +35,7 @@ export interface Params {
   q1Pace: number; // bid multiplier while the bag holds 50+ tiles (first quarter)
   q2Pace: number; // ...and 33-49 tiles (second quarter)
   playReward: number; // mid-match, also play any plan word worth at least this many points
+  maxShare: number; // mid-match, never bid more than this fraction of the balance on one tile
   timeMs: number; // solver budget per solve
 }
 
@@ -61,6 +62,7 @@ export const DEFAULT_PARAMS: Params = {
   q1Pace: 1,
   q2Pace: 1,
   playReward: 999,
+  maxShare: 1,
   timeMs: 35,
 };
 
@@ -130,6 +132,9 @@ export class Brain {
     if (FACE[letter]! >= 5) amount *= p.heavy;
     else if (p.floorBid > 0 && FACE[letter]! <= p.floorFace) amount = Math.max(amount, p.floorBid * pace);
     if (VOWEL[letter]) amount *= p.vowel;
+    // A tile's value assumes the rack can still be built around it; going
+    // nearly broke on one tile makes that impossible.
+    if (v.bag > p.endgame) amount = Math.min(amount, p.maxShare * v.balance);
     if (v.firstPrice) amount *= p.firstPriceShade;
     if (v.bag <= p.endgame) {
       // Money left at the end is worth nothing; spend it keeping tiles
