@@ -61,6 +61,14 @@ multiplier, and the money it brings in buys more tiles while they still matter. 
 set from random search added about two more points of win rate, confirmed on four independent
 seed sets.
 
+## Tournament odds
+
+`python -I sim/tournament_odds.py` pulls nothing itself; it reads the ratings and tonight's match
+results saved under `data/live/` and simulates the tournament format from the game's source
+(Swiss rounds at tables of six scored 6 − place, top-6 cut, one elimination per match, best-of-3
+final) with the Plackett-Luce model the leaderboard uses. It fits this bot's current strength from
+its own recent matches first, since the stored rating still carries earlier versions.
+
 ## Running it
 
 Needs Node 20+ (tested on 24).

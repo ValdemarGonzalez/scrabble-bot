@@ -1,0 +1,290 @@
+ id  | name                               | is_simulated 
+-----+------------------------------------+--------------
+ 1   | "Cheapo-sim"                       | true         
+ 2   | "Valor-sim"                        | true         
+ 3   | "Brutus-sim"                       | true         
+ 4   | "Hagrid-sim"                       | true         
+ 5   | "Maverick-sim"                     | true         
+ 6   | "Snippet-sim"                      | true         
+ 7   | "bot"                              | false        
+ 8   | "LetterShark"                      | false        
+ 9   | "SookraBot"                        | false        
+ 10  | "dev-voices"                       | false        
+ 11  | "code"                             | false        
+ 12  | "slow-n-dumb"                      | false        
+ 13  | "YeziShanYang"                     | false        
+ 14  | "tinytung"                         | false        
+ 15  | "podzemski"                        | false        
+ 16  | "Orpheus"                          | false        
+ 17  | "mexicanpepper"                    | false        
+ 18  | "LUCENT"                           | false        
+ 19  | "TileShark"                        | false        
+ 20  | "Doppio"                           | false        
+ 21  | "keanu_reeves"                     | false        
+ 22  | "Chinese Dante"                    | false        
+ 23  | "james"                            | false        
+ 24  | "Lex Maxima"                       | false        
+ 25  | "coconut"                          | false        
+ 26  | "ramsay"                           | false        
+ 27  | "MagnusBot"                        | false        
+ 28  | "LexMax"                           | false        
+ 29  | "BotAlpha"                         | false        
+ 30  | "scrabbler"                        | false        
+ 31  | "LexForge"                         | false        
+ 32  | "ChoiCube84"                       | false        
+ 33  | "adi"                              | false        
+ 66  | "Cashu"                            | false        
+ 36  | "SkyScrabble"                      | false        
+ 41  | "0x3f"                             | false        
+ 39  | "benx"                             | false        
+ 40  | "jawn"                             | false        
+ 42  | "LexOracle"                        | false        
+ 43  | "scrappybot"                       | false        
+ 44  | "marcellinus"                      | false        
+ 45  | "PathAndLight"                     | false        
+ 48  | "polarbear"                        | false        
+ 47  | "swanbot"                          | false        
+ 49  | "William Chenyin"                  | false        
+ 50  | "Megabot"                          | false        
+ 51  | "varr-bot"                         | false        
+ 52  | "postturing"                       | false        
+ 53  | "Heidi"                            | false        
+ 54  | "Fable"                            | false        
+ 55  | "guesser"                          | false        
+ 74  | "Karthik"                          | false        
+ 58  | "sardine"                          | false        
+ 59  | "Nijello"                          | false        
+ 60  | "atlas"                            | false        
+ 75  | "havrais"                          | false        
+ 62  | "maverick-bot"                     | false        
+ 63  | "hinsonloo"                        | false        
+ 64  | "Ally"                             | false        
+ 65  | "LexForge-DP"                      | false        
+ 67  | "bro"                              | false        
+ 68  | "swrj"                             | false        
+ 69  | "TaylorMason"                      | false        
+ 71  | "newBose"                          | false        
+ 72  | "Morei"                            | false        
+ 73  | "testbot"                          | false        
+ 120 | "LetterSharkUltra"                 | false        
+ 77  | "Lambi Lambiii"                    | false        
+ 78  | "HenryLoo"                         | false        
+ 79  | "Calliope"                         | false        
+ 80  | "Daphne"                           | false        
+ 81  | "Echo"                             | false        
+ 82  | "Fern"                             | false        
+ 83  | "Gaia"                             | false        
+ 85  | "Metheny"                          | false        
+ 87  | "varr2.0"                          | false        
+ 88  | "Lala"                             | false        
+ 89  | "triplo"                           | false        
+ 90  | "Menice"                           | false        
+ 91  | "Minjae"                           | false        
+ 92  | "wordchoice"                       | false        
+ 93  | "Zephyr"                           | false        
+ 94  | "James_Bond_007"                   | false        
+ 96  | "Spartans"                         | false        
+ 97  | "BlackSwan"                        | false        
+ 98  | "Dwight"                           | false        
+ 99  | "Torch"                            | false        
+ 100 | "Srinivas"                         | false        
+ 101 | "bee"                              | false        
+ 102 | "prestoshi"                        | false        
+ 103 | "Sher"                             | false        
+ 104 | "Ambees"                           | false        
+ 105 | "tatum"                            | false        
+ 106 | "Hamilton"                         | false        
+ 107 | "Lionel"                           | false        
+ 108 | "chad"                             | false        
+ 109 | "cortado"                          | false        
+ 110 | "ClaudeLab"                        | false        
+ 111 | "Mark Robbins"                     | false        
+ 112 | "tosh_lupoi"                       | false        
+ 113 | "MeniceLab"                        | false        
+ 114 | "Bron"                             | false        
+ 115 | "MeniceLab2"                       | false        
+ 116 | "scrabby"                          | false        
+ 117 | "yann"                             | false        
+ 118 | "triplov2"                         | false        
+ 119 | "Calebot"                          | false        
+ 121 | "daddy"                            | false        
+ 122 | "swrjlab"                          | false        
+ 123 | "67"                               | false        
+ 124 | "eskeetit"                         | false        
+ 125 | "adfa fdas df. as"                 | false        
+ 126 | "richard"                          | false        
+ 127 | "K-13"                             | false        
+ 128 | "Tessera"                          | false        
+ 129 | "Nigel"                            | false        
+ 130 | "dan"                              | false        
+ 131 | "BuySpellRepeat-bot"               | false        
+ 132 | "dwade"                            | false        
+ 133 | "Jobs"                             | false        
+ 134 | "nigel's dad"                      | false        
+ 135 | "Nigel xLSTM Bidder"               | false        
+ 136 | "robbot"                           | false        
+ 137 | "Derg"                             | false        
+ 138 | "Waupus"                           | false        
+ 139 | "ace_bot"                          | false        
+ 140 | "kuromi"                           | false        
+ 141 | "goat"                             | false        
+ 142 | "ericbot"                          | false        
+ 143 | "timefactories"                    | false        
+ 145 | "Afterword"                        | false        
+ 146 | "GrantBot"                         | false        
+ 147 | "bradley"                          | false        
+ 148 | "zoronbot"                         | false        
+ 149 | "here for free swag"               | false        
+ 150 | "cancodexcarry"                    | false        
+ 151 | "allin-bot"                        | false        
+ 152 | "STM"                              | false        
+ 153 | "testbot2"                         | false        
+ 154 | "Skone"                            | false        
+ 155 | "zzbot"                            | false        
+ 156 | "IzzyBot"                          | false        
+ 157 | "MangoPotato"                      | false        
+ 158 | "chaski"                           | false        
+ 159 | "saketh"                           | false        
+ 160 | "ragazoor"                         | false        
+ 161 | "Bot"                              | false        
+ 162 | "Barracuda"                        | false        
+ 163 | "Binter"                           | false        
+ 164 | "Tow57-Auctioneer"                 | false        
+ 165 | "cosine"                           | false        
+ 166 | "SoapConsumers"                    | false        
+ 167 | "Jaeger"                           | false        
+ 168 | "Malicious"                        | false        
+ 169 | "Abhi-AuctionLab"                  | false        
+ 170 | "Sepcis"                           | false        
+ 171 | "GodOfThudner"                     | false        
+ 172 | "Odysseus's Voyage"                | false        
+ 173 | "megatron pro max plus ultra 3000" | false        
+ 174 | "benoit"                           | false        
+ 175 | "wordgoat"                         | false        
+ 176 | "Titan"                            | false        
+ 177 | "Babbler"                          | false        
+ 178 | "gas"                              | false        
+ 179 | "exzell"                           | false        
+ 180 | "StickBot"                         | false        
+ 181 | "LexiconWarrior"                   | false        
+ 182 | "scrabblemaxxing"                  | false        
+ 183 | "QuertyBot"                        | false        
+ 184 | "clud"                             | false        
+ 185 | "monkey"                           | false        
+ 186 | "Lucy"                             | false        
+ 187 | "TileHoarder"                      | false        
+ 188 | "peanuts"                          | false        
+ 189 | "RackPilot"                        | false        
+ 190 | "Karppa"                           | false        
+ 191 | "Primey"                           | false        
+ 192 | "aipom"                            | false        
+ 193 | "RackMaw"                          | false        
+ 194 | "NigelBot"                         | false        
+ 195 | "Como Se Dice I Want to Scrabble"  | false        
+ 196 | "Vector Blast"                     | false        
+ 197 | "76ers"                            | false        
+ 198 | "Mr. Turkey"                       | false        
+ 199 | "Lexicoin"                         | false        
+ 200 | "Milo :3"                          | false        
+ 201 | "Lbender"                          | false        
+ 202 | "Rowin'Boats"                      | false        
+ 203 | "CasualThinker"                    | false        
+ 204 | "bot1717"                          | false        
+ 205 | "Nigel "Bidderson" Richards"       | false        
+ 206 | "Nhat"                             | false        
+ 207 | "LexForge-1107"                    | false        
+ 208 | "Pegasus"                          | false        
+ 209 | "N1gel"                            | false        
+ 210 | "scrapgoat"                        | false        
+ 211 | "evol"                             | false        
+ 212 | "Astronaut"                        | false        
+ 213 | "GoatBot"                          | false        
+ 214 | "sas"                              | false        
+ 215 | "SevenUp"                          | false        
+ 216 | "Momone Momo"                      | false        
+ 217 | "Cruds"                            | false        
+ 218 | "rp00087c"                         | false        
+ 219 | "Sigma"                            | false        
+ 220 | "rackpilot-live"                   | false        
+ 221 | "CoolBotYay"                       | false        
+ 222 | "scrabblefish"                     | false        
+ 223 | "saketh-apex"                      | false        
+ 224 | "LexForge-Base-v1"                 | false        
+ 225 | "Lexiconda"                        | false        
+ 226 | "Mavvy"                            | false        
+ 227 | "TitanUTD"                         | false        
+ 228 | "Bcrabble Sot"                     | false        
+ 229 | "moody"                            | false        
+ 230 | "Jake"                             | false        
+ 231 | "dumpling"                         | false        
+ 232 | "RackForge"                        | false        
+ 233 | "LexForge-Shade-v1"                | false        
+ 234 | "LexForge-Cash-v1"                 | false        
+ 235 | "pazabol"                          | false        
+ 236 | "LexForge-Reveal-v1"               | false        
+ 237 | "RackMaw-Spend115"                 | false        
+ 238 | "NigelR"                           | false        
+ 239 | "Pegasus v1"                       | false        
+ 240 | "Pegasus v2"                       | false        
+ 241 | "Pegasus v3"                       | false        
+ 242 | "Pegasus v4"                       | false        
+ 243 | "Pegasus v5"                       | false        
+ 244 | "Pegasus v6"                       | false        
+ 245 | "Pegasus v7"                       | false        
+ 246 | "Pegasus v8"                       | false        
+ 247 | "Pegasus v9"                       | false        
+ 248 | "Pegasus v10"                      | false        
+ 249 | "RackMaw-Phase"                    | false        
+ 250 | "RackMaw-Tie45"                    | false        
+ 251 | "RackMaw-Champion"                 | false        
+ 252 | "LexForge-Liquid03-v1"             | false        
+ 253 | "LexForge-Reward54-v1"             | false        
+ 254 | "RackMaw-Champion-Ctl"             | false        
+ 255 | "RackMaw-Champion-Ctl2"            | false        
+ 256 | "Jing"                             | false        
+ 257 | "RackMaw-Champion-Ctl3"            | false        
+ 258 | "LexForge-CashLiquid03-v1"         | false        
+ 259 | "Pegasus-vLexForge-Base-v1"        | false        
+ 260 | "RackMaw-Blend25"                  | false        
+ 261 | "RackMaw-Volume85"                 | false        
+ 262 | "RackMaw-Mult295"                  | false        
+ 311 | "ProbeBot1"                        | false        
+ 265 | "RackMaw-Blend0"                   | false        
+ 266 | "RackMaw-Endgame0"                 | false        
+ 267 | "RackMaw-Completion"               | false        
+ 318 | "GWENOF2NM"                        | false        
+ 269 | "LexForge-BidAck-v1"               | false        
+ 270 | "mkb"                              | false        
+ 271 | "RackMaw-Blend25-Spend115"         | false        
+ 272 | "RackMaw-Blend25-Volume85"         | false        
+ 273 | "RackMaw-Tie45-Spend115"           | false        
+ 274 | "LexForge-Reward54Ack-v1"          | false        
+ 275 | "RackMaw-TripleBest"               | false        
+ 276 | "LexForge-Samples64Ack-v1"         | false        
+ 320 | "GWQEXG5DM"                        | false        
+ 278 | "SCRBBEL"                          | false        
+ 328 | "BanhMiRamRam"                     | false        
+ 280 | "apex"                             | false        
+ 281 | "LongWords"                        | false        
+ 282 | "Muhahaha"                         | false        
+ 283 | "LexForge-Table64Ack-v1"           | false        
+ 310 | "wordshark"                        | false        
+ 285 | "LexForge-Samples384Ack-v1"        | false        
+ 312 | "Pegasus-vKYP"                     | false        
+ 316 | "Pegasus v11"                      | false        
+ 309 | "AbhiAuction"                      | false        
+ 306 | "doe"                              | false        
+ 324 | "Lime-LaChonk-V7-Large"            | false        
+ 315 | "The Scrabbler"                    | false        
+ 314 | "Nessienomic"                      | false        
+ 321 | "GWHAW4J00"                        | false        
+ 327 | "larper v2"                        | false        
+ 322 | "GWX6MWG4T"                        | false        
+ 317 | "GW6Z4UFOD"                        | false        
+ 323 | "larper"                           | false        
+ 326 | "Baby Pluto"                       | false        
+ 325 | "Tilewise"                         | false        
+ 319 | "GW2B2PK4E"                        | false        
+ 313 | "Test bot 100"                     | false        
+ 307 | "winner"                           | false        
+ 305 | "LexForge-Current1107-v1"          | false        
