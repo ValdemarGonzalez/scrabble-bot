@@ -39,11 +39,14 @@ export interface Params {
   timeMs: number; // solver budget per solve
 }
 
+// Tuned against a replay of real live-market bids (sim/market.ts): this set
+// beat the previous defaults on four independent seed sets, about +2 points
+// of win rate. Values that look odd (9.4, 0.48) are where the search landed.
 export const DEFAULT_PARAMS: Params = {
   alphaMax: 2.2,
   alphaRamp: 30,
-  alphaFloor: 0.6,
-  balance: 1.5,
+  alphaFloor: 0.87,
+  balance: 0.48,
   glue: 1,
   kappa: 3,
   paceRef: 1.5,
@@ -51,15 +54,15 @@ export const DEFAULT_PARAMS: Params = {
   paceMax: 3,
   flushAt: 2,
   playLen: 7,
-  lowCash: 15,
-  endgame: 6,
+  lowCash: 9.4,
+  endgame: 13,
   denial: 1.0,
   firstPriceShade: 0.8,
   heavy: 1,
-  floorBid: 0,
+  floorBid: 5,
   floorFace: 4,
-  vowel: 1,
-  q1Pace: 1,
+  vowel: 1.11,
+  q1Pace: 0.91,
   q2Pace: 1,
   playReward: 999,
   maxShare: 1,
