@@ -364,6 +364,9 @@ function onConnect(c: DbConnection, identity: Identity, token: string) {
   });
   c.db.matchParticipant.onInsert((_ctx, p) => {
     if (!live || p.botId !== myBotId) return;
+    // The game subscription replays every match this bot ever played;
+    // only a running one is news.
+    if (c.db.matchState.id.find(p.matchId)?.status.tag !== "Running") return;
     log(`seated in match ${p.matchId}`);
     watchStandings(c, p.matchId);
     for (const a of c.db.auction.iter()) {
@@ -371,7 +374,7 @@ function onConnect(c: DbConnection, identity: Identity, token: string) {
     }
   });
   c.db.wordPlay.onInsert((_ctx, w) => {
-    if (live && w.botId === myBotId) log(`m${w.matchId} scored ${w.word} +${w.totalReward}`);
+    if (live && w.botId === myBotId && c.db.matchState.id.find(w.matchId)?.status.tag === "Running") log(`m${w.matchId} scored ${w.word} +${w.totalReward}`);
   });
   c.db.tournament.onInsert(() => checkTournaments(c));
   c.db.tournament.onUpdate((_ctx, _old, t) => {

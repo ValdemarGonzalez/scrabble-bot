@@ -39,8 +39,8 @@ test("mid-match it holds words shorter than 7 letters", () => {
 });
 
 test("mid-match it plays a 7-letter word worth more than its tiles are to keep", () => {
-  // QUARTZY is 84 points; RETAINS (21) is held in the hope of an 8-letter upgrade.
-  assert.deepEqual(brain.wordsToPlay(view("AQRTUYZ", 40)), ["QUARTZY"]);
+  // FLEXION is 51 points; RETAINS (21) is held in the hope of an 8-letter upgrade.
+  assert.deepEqual(brain.wordsToPlay(view("EFILNOX", 40)), ["FLEXION"]);
   assert.deepEqual(brain.wordsToPlay(view("AEINRST", 40)), []);
 });
 
