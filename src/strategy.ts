@@ -9,7 +9,7 @@
 // as soon as the rack spells one. Everything else is held for longer words
 // and played in one flush just before the match ends.
 
-import { FACE, scan, rackSize, rackToString, type Lexicon, type Rack, type ScanResult } from "./lexicon.js";
+import { FACE, VOWEL, scan, rackSize, rackToString, type Lexicon, type Rack, type ScanResult } from "./lexicon.js";
 import { solve, type Plan } from "./solver.js";
 
 export interface Params {
@@ -29,6 +29,12 @@ export interface Params {
   denial: number; // fraction of balance per remaining auction spent on denial
   firstPriceShade: number; // bid this fraction of value in first-price auctions
   heavy: number; // bid multiplier for tiles with face value 5+ (J K Q X Z)
+  floorBid: number; // always bid at least this (x pace) on tiles with face value <= floorFace
+  floorFace: number;
+  vowel: number; // bid multiplier on vowels
+  q1Pace: number; // bid multiplier while the bag holds 50+ tiles (first quarter)
+  q2Pace: number; // ...and 33-49 tiles (second quarter)
+  playReward: number; // mid-match, also play any plan word worth at least this many points
   timeMs: number; // solver budget per solve
 }
 
@@ -49,6 +55,12 @@ export const DEFAULT_PARAMS: Params = {
   denial: 1.0,
   firstPriceShade: 0.8,
   heavy: 1,
+  floorBid: 0,
+  floorFace: 4,
+  vowel: 1,
+  q1Pace: 1,
+  q2Pace: 1,
+  playReward: 999,
   timeMs: 35,
 };
 
@@ -113,7 +125,11 @@ export class Brain {
     const value = this.tileValue(v.rack, letter, v.bag);
     const pace = Math.min(p.paceMax, Math.max(p.paceMin, v.balance / (v.bag + 1) / p.paceRef));
     let amount = value * p.kappa * pace;
+    if (v.bag >= 50) amount *= p.q1Pace;
+    else if (v.bag >= 33) amount *= p.q2Pace;
     if (FACE[letter]! >= 5) amount *= p.heavy;
+    else if (p.floorBid > 0 && FACE[letter]! <= p.floorFace) amount = Math.max(amount, p.floorBid * pace);
+    if (VOWEL[letter]) amount *= p.vowel;
     if (v.firstPrice) amount *= p.firstPriceShade;
     if (v.bag <= p.endgame) {
       // Money left at the end is worth nothing; spend it keeping tiles
@@ -138,7 +154,7 @@ export class Brain {
       return plan.words.map((w) => this.lex.words[w]!);
     }
     const plan = this.plan(v.rack, s.exact, this.alpha(v.bag));
-    let words = plan.words.filter((w) => this.lex.len[w]! >= p.playLen);
+    let words = plan.words.filter((w) => this.lex.len[w]! >= p.playLen || this.lex.reward[w]! >= p.playReward);
     if (words.length === 0 && v.balance < p.lowCash) {
       const cash = this.plan(v.rack, s.exact, Math.min(1.6, this.alpha(v.bag)));
       words = cash.words.filter((w) => this.lex.len[w]! >= 5);
