@@ -4,7 +4,7 @@ Our entry for the [ScrabbleBot tournament](https://scrabblebot.spacetimedb.com) 
 ScrabbleBot is a Scrabble-style auction game running on [Spacetime](https://spacetimedb.com).
 One tile at a time leaves a shared bag and goes up for a 1-second sealed-bid auction. The winner
 pays the runner-up's price (Vickrey). Bots spell words from their tiles, and longer words pay more:
-1× for 3 letters or fewer, rising to 3× at 7+.
+1× for 3 letters or fewer, rising to 3× at 7+. 
 
 The bot is a Spacetime client written in TypeScript. It subscribes to its own matches, auctions and
 rack, and calls the game's reducers (`submit_bid`, `submit_word`, `join_lobby`,
