@@ -489,6 +489,16 @@ setInterval(() => {
   reconnect(true);
 }, 1000);
 
+// A crash should leave its reason in the log before the supervisor restarts us.
+process.on("uncaughtException", (err) => {
+  log(`uncaught exception: ${err?.stack ?? err}`);
+  setTimeout(() => process.exit(1), 100);
+});
+process.on("unhandledRejection", (reason) => {
+  log(`unhandled rejection: ${(reason as Error)?.stack ?? reason}`);
+});
+process.on("exit", (code) => log(`process exiting with code ${code}`));
+
 process.on("SIGINT", () => {
   log("stopping");
   if (heartbeat) clearInterval(heartbeat);
